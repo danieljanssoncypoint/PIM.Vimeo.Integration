@@ -1,10 +1,10 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-    var vimeoAccessToken = ""; //Change me
-    var vimeoApiUrl = "https://api.vimeo.com/";
+    let vimeoAccessToken = ""; //Change me
+    let vimeoApiUrl = "https://api.vimeo.com/";
 
-    $(document).ready(function () {
-        getVideoPlayer();
+    $(document).ready(async function () {
+        await getVideoPlayer();
     });
 
     function buildVimeoAjaxSettings(restOperation, asyncOperation = false) {
@@ -24,7 +24,7 @@
         return ajaxSettings;
     }
 
-    function getVideoPlayer() {
+    async function getVideoPlayer() {
         var vimeoVideoId = data[0].fields.resourceVimeoId.value;
         if (!vimeoVideoId) {
             var noVimeoIdDiv = $("<div></div>")
@@ -32,7 +32,7 @@
             $("#container").append(noVimeoIdDiv);
             return;
         } else {
-            var videoObject = getEmbeddedVideoPlayerObject(vimeoVideoId);
+            var videoObject = await getEmbeddedVideoPlayerObject(vimeoVideoId);
             if (videoObject) {
                 //Use this for Vimeo video full screen. 
                 //$("#video-player-area").append(videoObject.embed.html); //player_embed_url
@@ -43,7 +43,7 @@
         }
     }
 
-    function getEmbeddedVideoPlayerObject(videoId) {
+    async function getEmbeddedVideoPlayerObject(videoId) {
         var videoObject;
         $.getJSON(buildVimeoAjaxSettings("videos/" + videoId, false))
             .fail(function (error) {
