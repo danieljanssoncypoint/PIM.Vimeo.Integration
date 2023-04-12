@@ -1,0 +1,65 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    var vimeoAccessToken = ""; //Change me
+    var vimeoApiUrl = "https://api.vimeo.com/";
+
+    $(document).ready(function () {
+        getVideoPlayer();
+    });
+
+    function buildVimeoAjaxSettings(restOperation, asyncOperation = false) {
+        var ajaxSettings = {
+            dataType: "json",
+            contentType: "application/json",
+            url: vimeoApiUrl + restOperation,
+            processData: true,
+            async: asyncOperation
+        };
+
+        ajaxSettings.headers = {
+            Authorization: "Bearer " + vimeoAccessToken,
+            Accept: "application/json"
+        };
+
+        return ajaxSettings;
+    }
+
+    function getVideoPlayer() {
+        var vimeoVideoId = data[0].fields.resourceVimeoId.value;
+        if (!vimeoVideoId) {
+            var noVimeoIdDiv = $("<div></div>")
+                .html("<span>This Resource has no Vimeo Video ID.</span>");
+            $("#container").append(noVimeoIdDiv);
+            return;
+        } else {
+            var videoObject = getEmbeddedVideoPlayerObject(vimeoVideoId);
+            if (videoObject) {
+                //Use this for Vimeo video full screen. 
+                //$("#video-player-area").append(videoObject.embed.html); //player_embed_url
+
+                //Use this for fixed size 1920x1080.
+                $("#video-player-area").append("<iframe src='" + videoObject.player_embed_url + "' width='1920' height='1080' frameborder='0' allow='autoplay; fullscreen; picture -in -picture' allowfullscreen title='" + videoObject.name + "' </iframe>");
+            }
+        }
+    }
+
+    function getEmbeddedVideoPlayerObject(videoId) {
+        var videoObject;
+        $.getJSON(buildVimeoAjaxSettings("videos/" + videoId, false))
+            .fail(function (error) {
+                console.log("Error when fetching video object from Vimeo.");
+                console.log(error);
+            })
+            .done(function (response) {
+                console.log(response);
+                videoObject = response;
+            });
+
+        return videoObject;
+    }
+
+</script>
+
+<div id="container">
+    <div id="video-player-area"></div>
+</div>
