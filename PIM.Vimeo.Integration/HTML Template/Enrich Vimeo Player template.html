@@ -1,14 +1,14 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-    let vimeoAccessToken = ""; //Change me
-    let vimeoApiUrl = "https://api.vimeo.com/";
+    const vimeoAccessToken = ""; //Change me
+    const vimeoApiUrl = "https://api.vimeo.com/";
 
     $(document).ready(async function () {
         await getVideoPlayer();
     });
 
     function buildVimeoAjaxSettings(restOperation, asyncOperation = false) {
-        var ajaxSettings = {
+        const ajaxSettings = {
             dataType: "json",
             contentType: "application/json",
             url: vimeoApiUrl + restOperation,
@@ -25,14 +25,14 @@
     }
 
     async function getVideoPlayer() {
-        var vimeoVideoId = data[0].fields.resourceVimeoId.value;
+        const vimeoVideoId = data[0].fields.resourceVimeoId.value;
         if (!vimeoVideoId) {
             var noVimeoIdDiv = $("<div></div>")
                 .html("<span>This Resource has no Vimeo Video ID.</span>");
             $("#container").append(noVimeoIdDiv);
             return;
         } else {
-            var videoObject = await getEmbeddedVideoPlayerObject(vimeoVideoId);
+            const videoObject = await getEmbeddedVideoPlayerObject(vimeoVideoId);
             if (videoObject) {
                 //Use this for Vimeo video full screen. 
                 //$("#video-player-area").append(videoObject.embed.html); //player_embed_url
@@ -44,7 +44,7 @@
     }
 
     async function getEmbeddedVideoPlayerObject(videoId) {
-        var videoObject;
+        let videoObject;
         $.getJSON(buildVimeoAjaxSettings("videos/" + videoId, false))
             .fail(function (error) {
                 console.log("Error when fetching video object from Vimeo.");
@@ -57,7 +57,6 @@
 
         return videoObject;
     }
-
 </script>
 
 <div id="container">
